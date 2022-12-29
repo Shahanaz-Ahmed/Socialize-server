@@ -21,6 +21,19 @@ async function run() {
   try {
     const allPostCollection = client.db("Socialize").collection("allPosts");
     const aboutCollection = client.db("Socialize").collection("about");
+    // const likeCollection = client.db("Socialize").collection("likes");
+
+    // app.post("/likes/:id", async (req, res) => {
+    //   const post = req.body;
+    //   const result = await likeCollection.insertOne(post);
+    //   res.send(result);
+    // });
+
+    // app.get("/likes/:id", async (req, res) => {
+    //   const query = {};
+    //   const posts = await likeCollection.find(query).toArray();
+    //   res.send(posts);
+    // });
 
     app.get("/allposts", async (req, res) => {
       const query = {};
@@ -40,6 +53,34 @@ async function run() {
       res.send(posts);
     });
 
+    app.get("/allposts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await allPostCollection.findOne(query);
+      res.send(result);
+    });
+
+    //allpost count update
+    app.put("/allposts/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const post = req.body;
+      const option = { upsert: true };
+      const updatedDoc = {
+        $set: {
+          totalCount: post.count,
+        },
+      };
+      const result = await allPostCollection.updateOne(
+        query,
+        updatedDoc,
+        option
+      );
+      res.send(result);
+      // console.log(post);
+    });
+
+    //about section
     app.get("/about/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -47,6 +88,7 @@ async function run() {
       res.send(result);
     });
 
+    //about section update
     app.put("/about/:id", async (req, res) => {
       const id = req.params.id;
       const name = req.body.name;
@@ -64,6 +106,21 @@ async function run() {
       };
       const result = await aboutCollection.updateOne(query, updatedDoc);
       res.send(result);
+    });
+
+    //sorting post get 3top liked post
+    app.get("/allposts", async (req, res) => {
+      // console.log(req.query.totalCount);
+      let query = {};
+      if (req.query.totalCount) {
+        query = {
+          count: req.query.count,
+        };
+      }
+      const cursor = allPostCollection.find(query).sort({ _id: -1 });
+      const posts = await cursor.toArray();
+      console.log(posts);
+      res.send(posts);
     });
   } finally {
   }
