@@ -47,9 +47,24 @@ async function run() {
       res.send(result);
     });
 
-    // app.put("/about/:id", async (req, res) => {
-    //   const id = req.params.id;
-    // });
+    app.put("/about/:id", async (req, res) => {
+      const id = req.params.id;
+      const name = req.body.name;
+      const email = req.body.email;
+      const university = req.body.university;
+      const address = req.body.address;
+      const query = { _id: ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          name: name,
+          email: email,
+          university: university,
+          address: address,
+        },
+      };
+      const result = await aboutCollection.updateOne(query, updatedDoc);
+      res.send(result);
+    });
   } finally {
   }
 }
