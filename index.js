@@ -58,6 +58,7 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await allPostCollection.findOne(query);
       res.send(result);
+      // console.log();
     });
 
     //allpost count update
@@ -69,6 +70,7 @@ async function run() {
       const updatedDoc = {
         $set: {
           totalCount: post.count,
+          comment: post.comment,
         },
       };
       const result = await allPostCollection.updateOne(
@@ -77,8 +79,27 @@ async function run() {
         option
       );
       res.send(result);
-      // console.log(post);
+      console.log(post);
     });
+
+    // app.put("/allposts/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: ObjectId(id) };
+    //   const post = req.body;
+    //   const option = { upsert: true };
+    //   const updatedDoc = {
+    //     $set: {
+    //       comment: post.comment,
+    //     },
+    //   };
+    //   const result = await allPostCollection.updateOne(
+    //     query,
+    //     updatedDoc,
+    //     option
+    //   );
+    //   res.send(result);
+    //   console.log(post);
+    // });
 
     //about section
     app.get("/about/:id", async (req, res) => {
