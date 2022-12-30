@@ -79,7 +79,7 @@ async function run() {
         option
       );
       res.send(result);
-      console.log(post);
+      // console.log(post);
     });
 
     // app.put("/allposts/:id", async (req, res) => {
@@ -150,7 +150,7 @@ async function run() {
       }
       const cursor = allPostCollection.find(query).sort({ totalCount: -1 });
       const posts = await cursor.limit(3).toArray();
-      console.log(posts);
+      // console.log(posts);
       res.send(posts);
     });
   } finally {
