@@ -108,17 +108,27 @@ async function run() {
       res.send(result);
     });
 
-    //sorting post get 3top liked post
-    app.get("/allposts", async (req, res) => {
-      // console.log(req.query.totalCount);
+    //specific ekta field newar jonno
+    app.get("/likeCount", async (req, res) => {
+      const query = {};
+      const result = await allPostCollection
+        .find(query)
+        .project({ totalCount: 1 })
+        .toArray();
+      res.send(result);
+    });
+
+    //sorting post get 3top loved post
+    app.get("/home/allposts", async (req, res) => {
+      console.log(req.query.totalCount);
       let query = {};
       if (req.query.totalCount) {
         query = {
-          count: req.query.count,
+          totalCount: req.query.totalCount,
         };
       }
-      const cursor = allPostCollection.find(query).sort({ _id: -1 });
-      const posts = await cursor.toArray();
+      const cursor = allPostCollection.find(query).sort({ totalCount: -1 });
+      const posts = await cursor.limit(3).toArray();
       console.log(posts);
       res.send(posts);
     });
